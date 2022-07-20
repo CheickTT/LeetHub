@@ -25,5 +25,3 @@ def get_accepted_submissions(all_submissions):
             ac_submissions[submission['title']] = submission['lang']
 
     return ac_submissions
-
-print("Test")
