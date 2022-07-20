@@ -1,5 +1,4 @@
 import requests
-#import leetcode
 
 def get_all_submissions(username):
     """Get all recent submited problems on github"""
