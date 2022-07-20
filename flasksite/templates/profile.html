@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+
+        <div class="d-flex align-items-center">
+            <div class="flex-shrink-8">
+                <img class="rounded-circle account-img" src="{{ profile_pic }}">
+            </div>
+            <div class="flex-grow-1 ms-3">
+                <h2>{{ subtitle }}</h2>
+                <h3 class="account-heading">{{ current_user.username }}</h3>
+                <p class="text-secondary">{{ current_user.email }}</p>
+            </div>
+        </div>
+
+        <div>
+            <div class="row my-3">
+                <h3>LeetCode Stats</h3>
+            </div>
+            <div class="row my-3">
+                <h3>GitHub Repos</h3>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

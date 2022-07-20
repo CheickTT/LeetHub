@@ -7,7 +7,7 @@ from flasksite.file_convert import get_college_list
 
 
 class RegistrationForm(FlaskForm):
-  username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+  username = StringField('LeetCode Username', validators=[DataRequired(), Length(min=2, max=20)])
   email = StringField('Email', validators=[DataRequired(), Email()])
   colleges = get_college_list()
   school = SelectField('College', choices=colleges)
@@ -33,3 +33,8 @@ class LoginForm(FlaskForm):
   existing_pass = PasswordField('Password', validators=[DataRequired()])
   login = SubmitField('Log In')  
   github_login = SubmitField('Log In with GitHub')
+
+
+class SearchForm(FlaskForm):
+  searched = StringField("Search for a profile", validators=[DataRequired()])
+  search_btn = StringField("Search")

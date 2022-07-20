@@ -1,18 +1,25 @@
 from flask import render_template, url_for, flash, redirect, request
 # from flask_bcrypt import Bcrypt
-from flasksite.forms import RegistrationForm, LoginForm
+from flasksite.forms import RegistrationForm, LoginForm, SearchForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.model import User
-from flasksite import app, bcrypt, db, proxied, github
+from flasksite import app, bcrypt, db, proxied
 from flask_login import login_user, logout_user, current_user, login_required
 from urllib.parse import urlparse, urljoin
 
 
-@app.route("/")
-@app.route("/home")
+@app.route("/", methods=["GET", "POST"])
+@app.route("/home", methods=["GET", "POST"])
+@app.route("/search", methods=["GET", "POST"])
 def home():
-  return render_template('home.html', subtitle="Home", text="This is the home page")
+  form = SearchForm()
+  if not form.validate_on_submit():
+    pass
+    # post.searched = form.searched.data
+   
+  return render_template('home.html', subtitle="Search for a profile", search_form=form, searched=form.searched.data)
+
 
 
 @app.route("/about")
@@ -64,14 +71,21 @@ def login():
       flash(f'Invalid username and/or password', 'danger')      
   return render_template('login.html', title="Login", login_form=login_form)
 
-@app.route("/github-login")
-def github_login():
-  return github.authorize()
+# @app.route("/github-login")
+# def github_login():
+#   return github.authorize()
 
 @app.route("/logout")
 def logout():
   logout_user()
   return redirect(url_for('home'))
+
+
+@app.route("/profile")
+@login_required
+def profile():
+  profile_pic = url_for('static', filename=f"img/{current_user.profile_pic}")
+  return render_template("profile.html", subtitle="Profile", profile_pic=profile_pic)
   
 
 def is_safe_url(target):

@@ -23,7 +23,7 @@ app = create_app()
 proxied = FlaskBehindProxy(app)
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
-github = GitHub(app)
+# github = GitHub(app)
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
