@@ -1,15 +1,16 @@
 import requests
-import leetcode
+#import leetcode
 
 def get_all_submissions(username):
     """Get all recent submited problems on github"""
 
-    query="""{
-            recentSubmissionList(username: "username", limit: 10){
+    query="""query getRecentSubmissionList($username: String!, $limit: Int) {
+            recentSubmissionList(username: $username, limit: $limit) {
                 title
+                titleSlug
                 statusDisplay
                 lang
-                }
+            }
         }"""
 
     variables = {'username':username}
