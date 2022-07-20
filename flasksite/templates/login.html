@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="content-section">
+    <h2>Login</h2>
+    <form method="POST" action="{{ url_for('login') }}">
+      {{ login_form.hidden_tag() }}
+      <fieldset class="form-group">
+        <div class="form-group">
+          {{ login_form.existing_user.label(class="form-control-label") }}
+          {% if login_form.existing_user.errors %}
+            {{ login_form.existing_user(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in login_form.existing_user.errors %}
+                <span>{{error}}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ login_form.existing_user(class="form-control form-control-lg") }}
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          {{ login_form.existing_pass.label(class="form-control-label") }}
+            {% if login_form.existing_pass.errors %}
+              {{ login_form.existing_pass(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in login_form.existing_pass.errors%}
+                    <span>{{error}}</span>
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ login_form.existing_pass(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>        
+      </fieldset>
+      <div class="form-group"> 
+        {{ login_form.login(class="btn btn-outline-info") }}
+      </div>
+      <div class="form-group">
+        {{login_form.github}}
+    </form>
+  </div>
+     
+{% endblock content %}
+              
