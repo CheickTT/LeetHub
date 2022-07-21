@@ -8,6 +8,7 @@ from flasksite import app, bcrypt, db, proxied
 from flask_login import login_user, logout_user, current_user, login_required
 from urllib.parse import urlparse, urljoin
 from pychartjs import BaseChart, ChartType, Color 
+from leetcode import get_submissions_difficulty,get_submissions_date,get_submissions
 from sqlalchemy import or_
 
 
@@ -47,7 +48,7 @@ def register():
   login_form = LoginForm()
   reg_form = RegistrationForm()
   if reg_form.validate_on_submit():
-    user = User(username=reg_form.username.data, email=reg_form.email.data, school=reg_form.school.data, grad_year=reg_form.grad_year.data, password_hash=hash_pass(reg_form.password.data))
+    user = User(username=reg_form.username.data, email=reg_form.email.data, school=reg_form.school.data, grad_year=reg_form.grad_year.data,password_hash=hash_pass(reg_form.password.data))
     db.session.add(user)
     db.session.commit()
     login_user(user)
@@ -98,7 +99,16 @@ def logout():
 @login_required
 def profile():
   profile_pic = url_for('static', filename=f"img/{current_user.profile_pic}")
-  NewChart = MyChart().get()
+  chart = MyChart()
+  submissions = get_submissions_date("username")
+  labels = []
+  values = []
+  for date,val in submissions.items():
+    labels.append(date)
+    values.append(val)
+  chart.labels.group = labels
+  chart.data.submission.data = values
+  NewChart = chart.get()
   return render_template("profile.html", subtitle="Profile", chartJSON = NewChart,profile_pic=profile_pic)
   
 def is_safe_url(target):
