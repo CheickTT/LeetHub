@@ -3,8 +3,16 @@
 
   <div class="content-section">
     <h2>Register</h2>
+    <form method="POST" action="{{ url_for('github_connect') }}">
+      {{ github_form.hidden_tag() }}
+      <div class="form-group"> 
+        {{ github_form.github_btn(class="btn btn-success") }}
+      </div>      
+    </form>
+    
     <form method="POST" action="{{ url_for('register') }}">
       {{ register_form.hidden_tag() }}
+     
       <fieldset class="form-group">
         <div class="form-group">
           {{ register_form.username.label(class="form-control-label") }}

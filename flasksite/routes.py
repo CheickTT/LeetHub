@@ -1,6 +1,6 @@
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, session
 # from flask_bcrypt import Bcrypt
-from flasksite.forms import RegistrationForm, LoginForm, SearchForm, PostForm
+from flasksite.forms import RegistrationForm, LoginForm, SearchForm, PostForm, GitHubForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.model import User,MyChart,circleChart
@@ -54,21 +54,27 @@ def search():
 
     return render_template("search.html", form=form, searched=search_query, users=user_obj)
 
+@app.route('/github-button', methods=['GET', 'POST'])
+def github_connect():
+    github_form = GitHubForm()
+    register_form = RegistrationForm()
+    return render_template("register.html", github_form=github_form, register_form=register_form)
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
   if current_user.is_authenticated:
     return redirect(url_for('home'))
-  login_form = LoginForm()
+
+  github_form = GitHubForm()
   reg_form = RegistrationForm()
   if reg_form.validate_on_submit():
     user = User(username=reg_form.username.data, email=reg_form.email.data, school=reg_form.school.data, grad_year=reg_form.grad_year.data,password_hash=hash_pass(reg_form.password.data))
     db.session.add(user)
     db.session.commit()
-
+    login_user(user)
     flash(f'Account created for {reg_form.username.data}!', 'success')
-    return redirect(url_for('github_login'))
-  return render_template('register.html', title='Register', login_form=login_form, register_form=reg_form)
+    return redirect(url_for('home'))
+  return render_template('register.html', title='Register', register_form=reg_form, github_form=github_form)
 
 @app.route('/github-login')
 def github_login():
@@ -91,7 +97,7 @@ def authorized(oauth_token):
 
     user.github_access_token = oauth_token
     print(user)
-    login_user(user)
+    # login_user(user)
     db.session.commit()
     return redirect(next_url)
 
