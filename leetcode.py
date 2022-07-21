@@ -20,7 +20,7 @@ def get_all_submissions(username):
 
 
     variables = {'username':username}
-    request = requests.post(" https://leetcode.com/graphql", json={'query': query1,'variables':variables})
+    request = requests.post(" https://leetcode.com/graphql", json={'query': query,'variables':variables})
     return request.json()
 
 def user_stats_api(username):
@@ -62,7 +62,8 @@ def get_user_stats(data):
     return {'ranking': stats['ranking'],'stars':stats['starRating']}
 
 
-def get_submissions_difficulty(data):
+def get_submissions_difficulty(username):
+    data = user_stats_api(username)
     difficulties = data['data']['allQuestionsCount']
     submissions = data['data']['matchedUser']['submitStats']['acSubmissionNum']
     results = {}
@@ -74,9 +75,7 @@ def get_submissions_difficulty(data):
 
     return results
 
-def get_submissions_date(username):
-
-    
+def get_submissions_date(username):   
     query ="""query getRecentSubmissionList($username: String!) {
             matchedUser(username: $username){
 
@@ -86,7 +85,7 @@ def get_submissions_date(username):
 
         }"""
 
-    data = variables = {'username':username}
+    variables = {'username':username}
     request = requests.post(" https://leetcode.com/graphql", json={'query': query,'variables':variables})
     data = request.json()
     submissions = ast.literal_eval(data['data']['matchedUser']['submissionCalendar'])
@@ -97,53 +96,12 @@ def get_submissions_date(username):
 
     return results
 
-
-def get_accepted_submissions(all_submissions):
+def get_submissions(username):
     """Retrieve accepted submissions and languages"""
+    all_submissions = get_all_submissions(username)
     submissions = all_submissions['data']['recentSubmissionList']
     ac_submissions = {}
     for submission in submissions:
-        if submission['statusDisplay'] == "Accepted" and submission['title'] not in ac_submissions.keys():
-            ac_submissions[submission['title']] = submission['lang']
+        ac_submissions[submission['title']] = submission['lang']
 
     return ac_submissions
-
-#print(get_user_stats("tourecheick291"))
-
-
-#pp = pprint(indent=4)
-print(get_submissions_date("tourecheick291"))
-#submissions = get_all_submissions("tourecheick291")
-#print(get_accepted_submissions(submissions))
-#print(get_user_stats("username"))
-data = user_stats_api("tourecheick291")
-print(get_user_stats(data))
-#print(get_submissions_difficulty(data))
-#print()
-#print(get_submissions_date(data))
-#request = requests.post(" https://leetcode.com/graphql",json={'query':query})
-#print(request.text)
-
-
-
-query="""{
-    matchedUser(username: "username") {
-        submitStats {
-            acSubmissionNum {
-                difficulty
-                count
-                submissions
-            }
-
-        }
-
-        submissionCalendar
-
-        profile {
-            ranking
-            reputation
-            starRating
-            userAvatar
-        }
-    }
-}"""
