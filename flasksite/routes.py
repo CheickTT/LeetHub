@@ -3,12 +3,11 @@ from flask import render_template, url_for, flash, redirect, request
 from flasksite.forms import RegistrationForm, LoginForm, SearchForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
-from flasksite.model import User,MyChart
+from flasksite.model import User,MyChart,circleChart
 from flasksite import app, bcrypt, db, proxied, github
 from flask_login import login_user, logout_user, current_user, login_required
 from urllib.parse import urlparse, urljoin
-from pychartjs import BaseChart, ChartType, Color 
-from leetcode import get_submissions_difficulty,get_submissions_date,get_submissions
+from leetcode import get_submissions_difficulty,get_submissions_date,get_submissions,get_submissions_level
 from sqlalchemy import or_
 
 
@@ -110,8 +109,14 @@ def profile():
   chart.labels.group = labels
   chart.data.submission.data = values
   NewChart = chart.get()
+  sub = get_submissions_level(current_user.username)
+  chart = circleChart()
+  chart.data.submission.data = [sub['Easy'],sub['Medium'],sub['Hard']]
+  cChart = chart.get()
+  
   return render_template("profile.html", subtitle="Profile", chartJSON = NewChart,profile_pic=profile_pic,\
-  display_graph= display_graph)
+    display_graph= display_graph,submissions = get_submissions(current_user.username),\
+      circleChartJSON=cChart, solved = sub["solved"])
   
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)

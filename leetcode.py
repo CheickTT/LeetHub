@@ -76,6 +76,18 @@ def get_submissions_difficulty(username):
 
     return results
 
+def get_submissions_level(username):
+    data = user_stats_api(username)
+    submissions = data['data']['matchedUser']['submitStats']['acSubmissionNum']
+    results = {}
+    for submission in submissions:
+        if submission['difficulty'] == 'All':
+            results['solved'] = submission['count']
+        else:
+            results[submission['difficulty']] = str(submission['count'])
+
+    return results
+
 def get_submissions_date(username):   
     query ="""query getRecentSubmissionList($username: String!) {
             matchedUser(username: $username){
@@ -97,22 +109,14 @@ def get_submissions_date(username):
 
     return results
 
-def get_accepted_submissions(all_submissions):
-    """Retrieve accepted submissions and languages"""
-    submissions = all_submissions['data']['recentSubmissionList']
-    ac_submissions = {}
-    for submission in submissions:
-        if submission['statusDisplay'] == "Accepted" and submission['title'] not in ac_submissions.keys():
-            ac_submissions[submission['title']] = submission['lang']
-
-    return ac_submissions
 
 def get_submissions(username):
     """Retrieve accepted submissions and languages"""
     all_submissions = get_all_submissions(username)
     submissions = all_submissions['data']['recentSubmissionList']
-    ac_submissions = {}
+    ac_submissions = []
     for submission in submissions:
-        ac_submissions[submission['title']] = submission['lang']
+        ac_submissions.append({"title" : submission['title'],"lang" : submission['lang'],\
+         "status" : submission['statusDisplay']})
 
     return ac_submissions
