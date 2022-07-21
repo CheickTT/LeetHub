@@ -22,40 +22,44 @@
         </div>
 
         <div>
-            <div class="row my-3">
+            <div class="row">
                 <h3>LeetCode Stats</h3>
-                <h4>Last 20 Submissions</h4>
-                <table>
-                    <tr>
-                        <th>Submissions</th>
-                        <th>Status</th>
-                    </tr>
-                    {% for submission in submissions%}
+                {% if submissions %}
+                    <h4>Last 20 Submissions</h4>
+                    <table class="table table-sm">
                         <tr>
-                            <td>{{submission["title"]}} ({{submission["lang"]}})</td>
-                            <td>{{submission["status"]}}</td>
+                            <th>Submissions</th>
+                            <th>Status</th>
                         </tr>
-                    {% endfor %}
-                </table>
-                <h4>Problem Solved</h4>
-                <p class="total-solved">Total Problem Solved: {{ solved }}</p>
-                <canvas id = "cChart" ></canvas>
-                <script>
-                    var data = {{ circleChartJSON | safe }}
-                    var ctx = document.getElementById("cChart").getContext('2d');
-                    var cChart = new Chart(ctx, data);
-                </script>
-                <h4>Submission Graph</h4>
-                {% if display_graph %}
-                    <canvas id = "myChart" ></canvas>
+                        {% for submission in submissions%}
+                            <tr>
+                                <td>{{submission["title"]}} ({{submission["lang"]}})</td>
+                                <td>{{submission["status"]}}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <h4>Problem Solved</h4>
+                    <p class="total-solved">Total Problem Solved: {{ solved }}</p>
+                    <canvas id = "cChart" ></canvas>
                     <script>
-                        var data = {{ chartJSON | safe }}
-                        var ctx = document.getElementById("myChart").getContext('2d');
-                        var myChart = new Chart(ctx, data);
+                        var data = {{ circleChartJSON | safe }}
+                        var ctx = document.getElementById("cChart").getContext('2d');
+                        var cChart = new Chart(ctx, data);
                     </script>
+                    <h4>Submission Graph</h4>
+                    {% if display_graph %}
+                        <canvas id = "myChart" ></canvas>
+                        <script>
+                            var data = {{ chartJSON | safe }}
+                            var ctx = document.getElementById("myChart").getContext('2d');
+                            var myChart = new Chart(ctx, data);
+                        </script>
+                    {% else %}
+                        <p> Not enough data to display the graph </p>
+                    {% endif %}
                 {% else %}
-                    <p> Not enough data to display the graph </p>
-                {% endif %}
+                    <p>No LeetCode account submissions found for {{ current_user.username }}</p>
+                {% endif %}    
 
             </div>
             <div class="row my-3">

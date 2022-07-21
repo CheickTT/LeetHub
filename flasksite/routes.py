@@ -135,27 +135,31 @@ def logout():
 def profile():
   profile_pic = url_for('static', filename=f"img/{current_user.profile_pic}")
   chart = MyChart()
-  submissions = get_submissions_date(current_user.username)
-  if(len(submissions) < 3):
-    display_graph = False
-  else:
-    display_graph = True
-  labels = []
-  values = []
-  for date,val in submissions.items():
-    labels.append(date)
-    values.append(val)
-  chart.labels.group = labels
-  chart.data.submission.data = values
-  NewChart = chart.get()
-  sub = get_submissions_level(current_user.username)
-  chart = circleChart()
-  chart.data.submission.data = [sub['Easy'],sub['Medium'],sub['Hard']]
-  cChart = chart.get()
-  
-  return render_template("profile.html", subtitle="Profile", chartJSON = NewChart,profile_pic=profile_pic,\
-    display_graph= display_graph,submissions = get_submissions(current_user.username),\
-      circleChartJSON=cChart, solved = sub["solved"])
+  try:
+    submissions = get_submissions_date(current_user.username)
+  except:
+    return render_template("profile.html", subtitle="Profile") 
+  else: 
+    if(len(submissions) < 3):
+      display_graph = False
+    else:
+      display_graph = True
+    labels = []
+    values = []
+    for date,val in submissions.items():
+      labels.append(date)
+      values.append(val)
+    chart.labels.group = labels
+    chart.data.submission.data = values
+    NewChart = chart.get()
+    sub = get_submissions_level(current_user.username)
+    chart = circleChart()
+    chart.data.submission.data = [sub['Easy'],sub['Medium'],sub['Hard']]
+    cChart = chart.get()
+    
+    return render_template("profile.html", subtitle="Profile", chartJSON = NewChart,profile_pic=profile_pic,\
+      display_graph= display_graph,submissions = get_submissions(current_user.username),\
+        circleChartJSON=cChart, solved = sub["solved"])
   
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
