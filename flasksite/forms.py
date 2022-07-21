@@ -12,7 +12,6 @@ class RegistrationForm(FlaskForm):
   colleges = get_college_list()
   school = SelectField('College', choices=colleges)
   grad_year = DateField('Graduation Year', validators=[DataRequired(message="Year must be in YYYY format.")], format='%Y')
-  print(type(grad_year))
   password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
   confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
   submit = SubmitField('Sign Up')
@@ -37,4 +36,4 @@ class LoginForm(FlaskForm):
 
 class SearchForm(FlaskForm):
   searched = StringField("Search for a profile", validators=[DataRequired()])
-  search_btn = StringField("Search")
+  search_btn = SubmitField("Search")

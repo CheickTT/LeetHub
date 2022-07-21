@@ -8,24 +8,36 @@ from flasksite import app, bcrypt, db, proxied
 from flask_login import login_user, logout_user, current_user, login_required
 from urllib.parse import urlparse, urljoin
 from pychartjs import BaseChart, ChartType, Color 
+from sqlalchemy import or_
 
 
-@app.route("/", methods=["GET", "POST"])
-@app.route("/home", methods=["GET", "POST"])
-@app.route("/search", methods=["GET", "POST"])
+@app.route("/")
+@app.route("/home")
 def home():
+  profiles = User.query.order_by(User.id.desc())
+  return render_template('home.html', subtitle="Profiles", users=profiles)
+
+
+@app.context_processor
+def base():
+  form = SearchForm()
+  return dict(form=form)
+
+@app.route("/search", methods=["POST"])
+def search():
   form = SearchForm()
   if not form.validate_on_submit():
-    pass
-    # post.searched = form.searched.data
-   
-  return render_template('home.html', subtitle="Search for a profile", search_form=form, searched=form.searched.data)
+    return redirect(url_for('home'))
+  else:
+    search_query = form.searched.data
+    user_obj = User.query.filter(or_(
+      (User.username.like(f'%{search_query}%')), 
+      (User.email.like(f'{search_query}%')),
+      (User.school.like(f'{search_query}%')),
+      (User.grad_year == f'{search_query}-01-01')
+      )).all()
 
-
-
-@app.route("/about")
-def second_page():
-  return render_template('about.html', subtitle="About", text="This is the second page")
+    return render_template("search.html", form=form, searched=search_query, users=user_obj)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -86,17 +98,9 @@ def logout():
 @login_required
 def profile():
   profile_pic = url_for('static', filename=f"img/{current_user.profile_pic}")
-  data = [
-    ("3-3-3",20),
-    ("2-2-2",22),
-    ("1-1-1",29),
-  ]
-  labels=[row[0] for row in data]
-  values=[row[1] for row in data]
-  NewChart = MyChart()
-  return render_template("profile.html", subtitle="Profile", profile_pic=profile_pic,chartJSON=NewChart.get(),labels=labels,values=values)
+  NewChart = MyChart().get()
+  return render_template("profile.html", subtitle="Profile", chartJSON = NewChart,profile_pic=profile_pic)
   
-
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))

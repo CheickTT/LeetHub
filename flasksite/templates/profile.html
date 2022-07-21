@@ -2,9 +2,11 @@
 {% block content %}
 
     <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdeliver.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
+        <script type="text/javascript" 
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js">
+        </script>
     </head>
+    <body>
     <div class="content-section">
 
         <div class="d-flex align-items-center">
@@ -14,7 +16,8 @@
             <div class="flex-grow-1 ms-3">
                 <h2>{{ subtitle }}</h2>
                 <h3 class="account-heading">{{ current_user.username }}</h3>
-                <p class="text-secondary">{{ current_user.email }}</p>
+                <p class="text-secondary">{{ current_user.email }} - {{ current_user.school }}, Class of {{ current_user.grad_year[:4] }} </p>
+
             </div>
         </div>
 
@@ -25,23 +28,7 @@
                 <script>
                     var data = {{ chartJSON | safe }}
                     var ctx = document.getElementById("myChart").getContext('2d');
-                    var myChart = new Chart(ctx,{
-                    type: "line",
-                    data{
-                        labels: {{labels | safe}},
-                        datasets: [
-                        {
-                            label: "Data points"
-                            data: {{values | safe}},
-                            fill: false,
-                            borderColor: "blue",
-                            lineTension: 0.1,
-                        }
-                        ]
-                    },
-                    options:{
-                        responsive = false,
-                    });
+                    var myChart = new Chart(ctx, data);
                 </script>
             </div>
             <div class="row my-3">
@@ -49,4 +36,5 @@
             </div>
         </div>
     </div>
+    </body>
 {% endblock content %}
