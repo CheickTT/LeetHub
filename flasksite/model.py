@@ -77,8 +77,7 @@ class circleChart(BaseChart):
 
         class submission: 
             data = [7]
-            backgroundColor = [Color.Palette(Color.Hex('#30EE8090'), 7, 'lightness'),
-            Color.Palette(Color.Hex('#FF7711'), 3, 'lightness'),Color.Palette(Color.Hex('#FF2211'), 3, 'lightness')]
+            backgroundColor = ["green","orange","red"]
             
     class options: 
 
