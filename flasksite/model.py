@@ -18,3 +18,6 @@ class User(db.Model, UserMixin):
 
   def __repr__(self):
     return f"User('{self.username}', '{self.email}', '{self.profile_pic}', '{self.school}', '{self.grad_year}', '{self.password_hash}')"
+
+class LCStats():
+  pass

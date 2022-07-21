@@ -9,7 +9,8 @@
             <div class="flex-grow-1 ms-3">
                 <h2>{{ subtitle }}</h2>
                 <h3 class="account-heading">{{ current_user.username }}</h3>
-                <p class="text-secondary">{{ current_user.email }}</p>
+                <p class="text-secondary">{{ current_user.email }} - {{ current_user.school }}, Class of {{ current_user.grad_year[:4] }} </p>
+
             </div>
         </div>
 
