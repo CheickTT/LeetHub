@@ -46,7 +46,18 @@ class MyChart(BaseChart):
                  "ticks": {
                      "beginAtZero": True,
                      "callback": "<<function(value, index, values) {return value ;}>>",
-                     }
+                     },
+                  "scaleLabel": {
+                      "display": True,
+                      "labelString": "Submissions"
+                  }
+                }
+            ],
+            "xAxes": [{
+                  "scaleLabel": {
+                      "display": True,
+                      "labelString": "Dates"
+                  }
                 }
             ]
         }

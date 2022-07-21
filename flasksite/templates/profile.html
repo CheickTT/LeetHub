@@ -24,12 +24,17 @@
         <div>
             <div class="row my-3">
                 <h3>LeetCode Stats</h3>
-                <canvas id = "myChart" ></canvas>
-                <script>
-                    var data = {{ chartJSON | safe }}
-                    var ctx = document.getElementById("myChart").getContext('2d');
-                    var myChart = new Chart(ctx, data);
-                </script>
+                {% if display_graph %}
+                    <canvas id = "myChart" ></canvas>
+                    <script>
+                        var data = {{ chartJSON | safe }}
+                        var ctx = document.getElementById("myChart").getContext('2d');
+                        var myChart = new Chart(ctx, data);
+                    </script>
+                {% else %}
+                    <p> Not enough data to display the graph </p>
+                {% endif %}
+
             </div>
             <div class="row my-3">
                 <h3>GitHub Repos</h3>
