@@ -18,6 +18,7 @@ class User(db.Model, UserMixin):
   password_hash = db.Column(db.String(60), nullable=False)
   github_access_token = db.Column(db.String(120), nullable=False, default='testtoken')
 
+
   def __repr__(self):
     return f"User('{self.username}', '{self.email}', '{self.profile_pic}', '{self.school}', '{self.grad_year}', '{self.password_hash}')"
 
@@ -47,9 +48,38 @@ class MyChart(BaseChart):
                  "ticks": {
                      "beginAtZero": True,
                      "callback": "<<function(value, index, values) {return value ;}>>",
-                     }
+                     },
+                  "scaleLabel": {
+                      "display": True,
+                      "labelString": "Submissions"
+                  }
+                }
+            ],
+            "xAxes": [{
+                  "scaleLabel": {
+                      "display": True,
+                      "labelString": "Dates"
+                  }
                 }
             ]
         }
-class LCStats():
-  pass
+
+class circleChart(BaseChart):
+
+    type = ChartType.Doughnut
+
+    class labels:
+        group = ['Easy', 'Medium', 'Hard']
+
+
+    
+    class data:
+
+        class submission: 
+            data = [7]
+            backgroundColor = [Color.Palette(Color.Hex('#30EE8090'), 7, 'lightness'),
+            Color.Palette(Color.Hex('#FF7711'), 3, 'lightness'),Color.Palette(Color.Hex('#FF2211'), 3, 'lightness')]
+            
+    class options: 
+
+        title = Options.Title("Number of Submissions")

@@ -9,6 +9,13 @@ h1, h2, h3, h4, h5, h6 {
   color: #444444;
 }
 
+.total-solved{
+  text-align:right;
+  color: darkblue;
+  font-weight: bold;
+  
+}
+
 .bg-steel {
   background-color: #fff;
 }
@@ -95,4 +102,15 @@ a.article-title:hover {
 
 .form-group {
   padding: 10px 0;
+}
+
+h4{
+  padding: 5px;
+  text-align: center;
+  color: #428bca;
+  padding-top: 30px;
+}
+
+th,td{
+  padding: 10px;
 }
