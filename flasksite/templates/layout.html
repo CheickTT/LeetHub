@@ -29,16 +29,29 @@
             <form method="POST" action="{{ url_for('search')}}" class="d-flex">
               {{ form.hidden_tag() }}
               <div class="input-group ms-2">
-                <input class="form-control form-control-sm" data-bs-toggle="tooltip" title="Search by username, email, school, or graduation year" type="search" placeholder="Search" aria-label="Search" aria-describedby="button-addon2" name="searched">
-                <button class="btn btn-primary btn-sm" id="button-addon2" type="submit">Search</button>
+                <input class="form-control" data-bs-toggle="tooltip" title="Search by username, email, school, or graduation year" type="search" placeholder="Search" aria-label="Search" aria-describedby="button-addon2" name="searched">
+                <button class="btn btn-primary" id="button-addon2" type="submit">Search</button>
               </div>
             </form>              
           </div>
          
           <div class="navbar-nav" id="navbarText">
             {% if current_user.is_authenticated: %}
+              <!-- <a class="nav-item nav-link" href="{{ url_for('new_post') }}">Create New Post</a>
               <span class="navbar-text">Welcome, {{ current_user.username }}</span>
               <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+               -->
+
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Welcome, {{ current_user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                    <li><a class="dropdown-item" href="{{ url_for('new_post') }}">Create New Post</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+                </ul>
+              </li>
+
             {% else %}
               <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
               <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>            

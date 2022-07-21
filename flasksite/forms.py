@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, DateField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, DateField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from flask_sqlalchemy import SQLAlchemy
 from flasksite.model import User
@@ -15,6 +15,7 @@ class RegistrationForm(FlaskForm):
   password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
   confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
   submit = SubmitField('Sign Up and Connect to GitHub')
+#   github_btn = SubmitField('Connect to GitHub')
 
   def validate_username(self, username):
     user_obj = User.query.filter_by(username=username.data).first()
@@ -31,9 +32,15 @@ class LoginForm(FlaskForm):
   existing_user = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
   existing_pass = PasswordField('Password', validators=[DataRequired()])
   login = SubmitField('Log In')  
-#   github_login = SubmitField('Log In with GitHub')
+
 
 
 class SearchForm(FlaskForm):
   searched = StringField("Search for a profile", validators=[DataRequired()])
   search_btn = SubmitField("Search")
+
+
+class PostForm(FlaskForm):
+    title = StringField("Title", validators=[DataRequired()])
+    content = TextAreaField("Content", validators=[DataRequired()])
+    post_btn = SubmitField("Post")

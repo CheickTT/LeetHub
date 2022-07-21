@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, request
 # from flask_bcrypt import Bcrypt
-from flasksite.forms import RegistrationForm, LoginForm, SearchForm
+from flasksite.forms import RegistrationForm, LoginForm, SearchForm, PostForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.model import User,MyChart
@@ -12,11 +12,26 @@ from leetcode import get_submissions_difficulty,get_submissions_date,get_submiss
 from sqlalchemy import or_
 
 
-@app.route("/")
-@app.route("/home")
+@app.route("/", methods=["GET", "POST"])
+@app.route("/home", methods=["GET", "POST"])
 def home():
   profiles = User.query.order_by(User.id.desc())
-  return render_template('home.html', subtitle="Profiles", users=profiles)
+  return render_template('profiles.html', subtitle="Profiles", users=profiles)
+
+
+@app.route("/post/new", methods=["GET", "POST"])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        print("Successful post")
+        flash('Your post has been created!', 'success')
+        return redirect(url_for("home"))
+    else:
+        # form.
+        print(f"is submitted: {form.is_submitted()}")
+        print("Unsuccessful post")
+    return render_template("new_post.html", post_form=form)
 
 
 @app.context_processor
@@ -51,11 +66,35 @@ def register():
     user = User(username=reg_form.username.data, email=reg_form.email.data, school=reg_form.school.data, grad_year=reg_form.grad_year.data,password_hash=hash_pass(reg_form.password.data))
     db.session.add(user)
     db.session.commit()
-    login_user(user)
+
     flash(f'Account created for {reg_form.username.data}!', 'success')
-    return github.authorize()
+    return redirect(url_for('github_login'))
   return render_template('register.html', title='Register', login_form=login_form, register_form=reg_form)
 
+@app.route('/github-login')
+def github_login():
+    return github.authorize()
+
+@app.route('/github-callback')
+@github.authorized_handler
+def authorized(oauth_token):
+    print("Running authorized()...")
+    print(f'Token: {oauth_token}')
+    next_url = request.args.get('next') or url_for('home')
+    if oauth_token is None:
+        flash("Authorization failed.")
+        return redirect(next_url)
+
+    user = User.query.filter_by(github_access_token=oauth_token).first()
+    if user is None:
+        user = User.query.order_by(User.id.desc()).first() # since user is created in register(), just retrieve latest entry 
+        # db.session.add(user)
+
+    user.github_access_token = oauth_token
+    print(user)
+    login_user(user)
+    db.session.commit()
+    return redirect(next_url)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
