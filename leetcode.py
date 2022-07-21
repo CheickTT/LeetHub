@@ -3,6 +3,9 @@ from datetime import datetime
 from pprint import pprint
 import ast
 
+def checkLeetCodeAccount(username):
+    pass
+
 def get_all_submissions(username):
     """Get all recent submited problems on github"""
 
