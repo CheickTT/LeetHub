@@ -15,7 +15,7 @@ class RegistrationForm(FlaskForm):
   grad_year = DateField('Graduation Year', validators=[DataRequired(message="Year must be in YYYY format.")], format='%Y')
   password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
   confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-  submit = SubmitField('Sign Up')
+  submit = SubmitField('Sign Up and Connect to GitHub')
 
   def validate_username(self, username):
     user_obj = User.query.filter_by(username=username.data).first()
@@ -34,7 +34,7 @@ class LoginForm(FlaskForm):
   existing_user = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
   existing_pass = PasswordField('Password', validators=[DataRequired()])
   login = SubmitField('Log In')  
-  github_login = SubmitField('Log In with GitHub')
+#   github_login = SubmitField('Log In with GitHub')
 
 
 class SearchForm(FlaskForm):

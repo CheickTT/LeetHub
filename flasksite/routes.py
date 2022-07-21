@@ -4,7 +4,7 @@ from flasksite.forms import RegistrationForm, LoginForm, SearchForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.model import User,MyChart
-from flasksite import app, bcrypt, db, proxied
+from flasksite import app, bcrypt, db, proxied, github
 from flask_login import login_user, logout_user, current_user, login_required
 from urllib.parse import urlparse, urljoin
 from pychartjs import BaseChart, ChartType, Color 
@@ -53,7 +53,7 @@ def register():
     db.session.commit()
     login_user(user)
     flash(f'Account created for {reg_form.username.data}!', 'success')
-    return redirect(url_for('home'))
+    return github.authorize()
   return render_template('register.html', title='Register', login_form=login_form, register_form=reg_form)
 
 
@@ -85,9 +85,6 @@ def login():
       flash(f'Invalid username and/or password', 'danger')      
   return render_template('login.html', title="Login", login_form=login_form)
 
-# @app.route("/github-login")
-# def github_login():
-#   return github.authorize()
 
 @app.route("/logout")
 def logout():
