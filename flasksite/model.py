@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
   school = db.Column(db.String(120), nullable=False)  
   grad_year = db.Column(db.String(4), nullable=False)
   password_hash = db.Column(db.String(60), nullable=False)
+  
   github_access_token = db.Column(db.String(120), nullable=False)
 
   def __repr__(self):
@@ -62,5 +63,23 @@ class MyChart(BaseChart):
                 }
             ]
         }
-class LCStats():
-  pass
+
+class circleChart(BaseChart):
+
+    type = ChartType.Doughnut
+
+    class labels:
+        group = ['Easy', 'Medium', 'Hard']
+
+
+    
+    class data:
+
+        class submission: 
+            data = [7]
+            backgroundColor = [Color.Palette(Color.Hex('#30EE8090'), 7, 'lightness'),
+            Color.Palette(Color.Hex('#FF7711'), 3, 'lightness'),Color.Palette(Color.Hex('#FF2211'), 3, 'lightness')]
+            
+    class options: 
+
+        title = Options.Title("Number of Submissions")
