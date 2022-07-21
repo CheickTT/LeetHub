@@ -100,7 +100,11 @@ def logout():
 def profile():
   profile_pic = url_for('static', filename=f"img/{current_user.profile_pic}")
   chart = MyChart()
-  submissions = get_submissions_date("username")
+  submissions = get_submissions_date(current_user.username)
+  if(len(submissions) < 3):
+    display_graph = False
+  else:
+    display_graph = True
   labels = []
   values = []
   for date,val in submissions.items():
@@ -109,7 +113,8 @@ def profile():
   chart.labels.group = labels
   chart.data.submission.data = values
   NewChart = chart.get()
-  return render_template("profile.html", subtitle="Profile", chartJSON = NewChart,profile_pic=profile_pic)
+  return render_template("profile.html", subtitle="Profile", chartJSON = NewChart,profile_pic=profile_pic,\
+  display_graph= display_graph)
   
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
