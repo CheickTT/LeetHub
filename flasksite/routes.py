@@ -3,10 +3,11 @@ from flask import render_template, url_for, flash, redirect, request
 from flasksite.forms import RegistrationForm, LoginForm, SearchForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
-from flasksite.model import User
+from flasksite.model import User,MyChart
 from flasksite import app, bcrypt, db, proxied
 from flask_login import login_user, logout_user, current_user, login_required
 from urllib.parse import urlparse, urljoin
+from pychartjs import BaseChart, ChartType, Color 
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -85,7 +86,15 @@ def logout():
 @login_required
 def profile():
   profile_pic = url_for('static', filename=f"img/{current_user.profile_pic}")
-  return render_template("profile.html", subtitle="Profile", profile_pic=profile_pic)
+  data = [
+    ("3-3-3",20),
+    ("2-2-2",22),
+    ("1-1-1",29),
+  ]
+  labels=[row[0] for row in data]
+  values=[row[1] for row in data]
+  NewChart = MyChart()
+  return render_template("profile.html", subtitle="Profile", profile_pic=profile_pic,chartJSON=NewChart.get(),labels=labels,values=values)
   
 
 def is_safe_url(target):

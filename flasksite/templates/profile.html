@@ -1,5 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
+
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdeliver.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
+    </head>
     <div class="content-section">
 
         <div class="d-flex align-items-center">
@@ -16,6 +21,28 @@
         <div>
             <div class="row my-3">
                 <h3>LeetCode Stats</h3>
+                <canvas id = "myChart" ></canvas>
+                <script>
+                    var data = {{ chartJSON | safe }}
+                    var ctx = document.getElementById("myChart").getContext('2d');
+                    var myChart = new Chart(ctx,{
+                    type: "line",
+                    data{
+                        labels: {{labels | safe}},
+                        datasets: [
+                        {
+                            label: "Data points"
+                            data: {{values | safe}},
+                            fill: false,
+                            borderColor: "blue",
+                            lineTension: 0.1,
+                        }
+                        ]
+                    },
+                    options:{
+                        responsive = false,
+                    });
+                </script>
             </div>
             <div class="row my-3">
                 <h3>GitHub Repos</h3>

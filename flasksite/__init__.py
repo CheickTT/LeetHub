@@ -3,7 +3,7 @@ from flask_behind_proxy import FlaskBehindProxy
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
-from flask_github import GitHub
+#from flask_github import GitHub
 
 
 def create_app(test_config=None):
