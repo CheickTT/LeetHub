@@ -20,7 +20,11 @@ def get_all_submissions(username):
 
 
     variables = {'username':username}
+<<<<<<< HEAD
     request = requests.post(" https://leetcode.com/graphql", json={'query': query1,'variables':variables})
+=======
+    request = requests.post(" https://leetcode.com/graphql", json={'query': query,'variables':variables})
+>>>>>>> e3c44a57d305082cf99062d303ac4420f71c290a
     return request.json()
 
 def user_stats_api(username):
@@ -62,7 +66,12 @@ def get_user_stats(data):
     return {'ranking': stats['ranking'],'stars':stats['starRating']}
 
 
+<<<<<<< HEAD
 def get_submissions_difficulty(data):
+=======
+def get_submissions_difficulty(username):
+    data = user_stats_api(username)
+>>>>>>> e3c44a57d305082cf99062d303ac4420f71c290a
     difficulties = data['data']['allQuestionsCount']
     submissions = data['data']['matchedUser']['submitStats']['acSubmissionNum']
     results = {}
@@ -74,9 +83,13 @@ def get_submissions_difficulty(data):
 
     return results
 
+<<<<<<< HEAD
 def get_submissions_date(username):
 
     
+=======
+def get_submissions_date(username):   
+>>>>>>> e3c44a57d305082cf99062d303ac4420f71c290a
     query ="""query getRecentSubmissionList($username: String!) {
             matchedUser(username: $username){
 
@@ -86,7 +99,11 @@ def get_submissions_date(username):
 
         }"""
 
+<<<<<<< HEAD
     data = variables = {'username':username}
+=======
+    variables = {'username':username}
+>>>>>>> e3c44a57d305082cf99062d303ac4420f71c290a
     request = requests.post(" https://leetcode.com/graphql", json={'query': query,'variables':variables})
     data = request.json()
     submissions = ast.literal_eval(data['data']['matchedUser']['submissionCalendar'])
@@ -97,6 +114,7 @@ def get_submissions_date(username):
 
     return results
 
+<<<<<<< HEAD
 
 def get_accepted_submissions(all_submissions):
     """Retrieve accepted submissions and languages"""
@@ -147,3 +165,14 @@ query="""{
         }
     }
 }"""
+=======
+def get_submissions(username):
+    """Retrieve accepted submissions and languages"""
+    all_submissions = get_all_submissions(username)
+    submissions = all_submissions['data']['recentSubmissionList']
+    ac_submissions = {}
+    for submission in submissions:
+        ac_submissions[submission['title']] = submission['lang']
+
+    return ac_submissions
+>>>>>>> e3c44a57d305082cf99062d303ac4420f71c290a
