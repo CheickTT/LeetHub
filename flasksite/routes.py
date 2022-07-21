@@ -1,23 +1,43 @@
 from flask import render_template, url_for, flash, redirect, request
 # from flask_bcrypt import Bcrypt
-from flasksite.forms import RegistrationForm, LoginForm
+from flasksite.forms import RegistrationForm, LoginForm, SearchForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
-from flasksite.model import User
-from flasksite import app, bcrypt, db, proxied, github
+from flasksite.model import User,MyChart
+from flasksite import app, bcrypt, db, proxied
 from flask_login import login_user, logout_user, current_user, login_required
 from urllib.parse import urlparse, urljoin
+from pychartjs import BaseChart, ChartType, Color 
+from sqlalchemy import or_
 
 
 @app.route("/")
 @app.route("/home")
 def home():
-  return render_template('home.html', subtitle="Home", text="This is the home page")
+  profiles = User.query.order_by(User.id.desc())
+  return render_template('home.html', subtitle="Profiles", users=profiles)
 
 
-@app.route("/about")
-def second_page():
-  return render_template('about.html', subtitle="About", text="This is the second page")
+@app.context_processor
+def base():
+  form = SearchForm()
+  return dict(form=form)
+
+@app.route("/search", methods=["POST"])
+def search():
+  form = SearchForm()
+  if not form.validate_on_submit():
+    return redirect(url_for('home'))
+  else:
+    search_query = form.searched.data
+    user_obj = User.query.filter(or_(
+      (User.username.like(f'%{search_query}%')), 
+      (User.email.like(f'{search_query}%')),
+      (User.school.like(f'{search_query}%')),
+      (User.grad_year == f'{search_query}-01-01')
+      )).all()
+
+    return render_template("search.html", form=form, searched=search_query, users=user_obj)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -64,16 +84,23 @@ def login():
       flash(f'Invalid username and/or password', 'danger')      
   return render_template('login.html', title="Login", login_form=login_form)
 
-@app.route("/github-login")
-def github_login():
-  return github.authorize()
+# @app.route("/github-login")
+# def github_login():
+#   return github.authorize()
 
 @app.route("/logout")
 def logout():
   logout_user()
   return redirect(url_for('home'))
-  
 
+
+@app.route("/profile")
+@login_required
+def profile():
+  profile_pic = url_for('static', filename=f"img/{current_user.profile_pic}")
+  NewChart = MyChart().get()
+  return render_template("profile.html", subtitle="Profile", chartJSON = NewChart,profile_pic=profile_pic)
+  
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))

@@ -4,6 +4,7 @@ body {
   margin-top: 5rem;
 }
 
+
 h1, h2, h3, h4, h5, h6 {
   color: #444444;
 }
@@ -15,6 +16,7 @@ h1, h2, h3, h4, h5, h6 {
 .list-group-item {
   margin-bottom: 1em;
 }
+
 
 .site-header .navbar-nav .nav-link {
   color: #0b0c0d;
@@ -29,7 +31,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #title {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'DM Sans';, sans-serif;
   font-weight: bold;
   font-size: 2em;
   color: #000;
@@ -37,11 +39,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .content-section {
   background: #ffffff;
-  padding: 10px 20px;
+  padding: 20px;
   border: 1px solid #dddddd;
   border-radius: 3px;
   margin-bottom: 20px;
-  /* width: 50%; */
+
 }
 
 .article-title {
