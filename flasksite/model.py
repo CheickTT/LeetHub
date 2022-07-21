@@ -1,4 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy,sqlalchemy
 from flasksite import app, db, login_manager
 from flask_login import UserMixin
 from pychartjs import BaseChart, ChartType, Color, Options
@@ -30,35 +30,23 @@ class MyChart(BaseChart):
 
     class data:
 
-        class apples: 
-            data = [2, 8, 11, 7, 2, 4, 3]
+        class submission: 
+            data = [7]
             backgroundColor = Color.Palette(Color.Hex('#30EE8090'), 7, 'lightness')
             borderColor = Color.Green
-            yAxisID = 'apples'
-
-        class totalEnergy: 
-            label = "Total Daily Energy Consumption (kJ)"
-            type = ChartType.Line
-            data = [5665, 5612, 7566, 8763, 5176, 5751, 6546]
-            backgroundColor = Color.RGBA(0,0,0,0)
-            borderColor = Color.Purple
-            yAxisID = 'totalenergy'
-
+            yAxisID = 'submission'
+            
     class options: 
 
-        title = Options.Title("Apples I've eaten compared to total daily energy")
+        title = Options.Title("Number of Submissions")
 
         scales = {
             "yAxes": [
-                {"id": "apples",
+                {"id": "submission",
                  "ticks": {
                      "beginAtZero": True,
-                     "callback": "<<function(value, index, values) {return value + ' Big Ones';}>>",
+                     "callback": "<<function(value, index, values) {return value ;}>>",
                      }
-                },
-                {"id": "totalenergy",
-                 "position": "right",
-                 "ticks": {"beginAtZero": True}
                 }
             ]
         }
