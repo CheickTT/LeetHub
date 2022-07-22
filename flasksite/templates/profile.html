@@ -59,11 +59,31 @@
                     {% endif %}
                 {% else %}
                     <p>No LeetCode account submissions found for {{ current_user.username }}</p>
-                {% endif %}    
+                {% endif %}
 
             </div>
             <div class="row my-3">
                 <h3>GitHub Repos</h3>
+                <table class="table table-sm">
+                    <tr>
+                        <th>Repo Name</th>
+                        <th>Description</th>
+                        <th>Languages</th>
+                    </tr>
+                    {% for repo in github_data['repositories'] %}
+                        <tr>
+                            <td>{{repo['name']}}</td>
+                            {% if repo['description'] %}
+                                <td>{{ repo['description'] }}</td>
+                            {% else %}
+                                <td class="fst-italic fw-light">No description provided.</td>
+                            {% endif %}
+
+                            <td>{{ ', '.join(repo['languages']) }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
             </div>
         </div>
     </div>

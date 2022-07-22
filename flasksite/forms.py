@@ -15,7 +15,7 @@ class RegistrationForm(FlaskForm):
   grad_year = DateField('Graduation Year', validators=[DataRequired(message="Year must be in YYYY format.")], format='%Y')
   password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
   confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-  submit = SubmitField('Sign Up')
+  submit = SubmitField('Sign Up and Connect to GitHub')
 
 
   def validate_username(self, username):
@@ -30,8 +30,8 @@ class RegistrationForm(FlaskForm):
     if user_obj:
       raise ValidationError("Email already in use.")    
 
-class GitHubForm(FlaskForm):
-  github_btn = SubmitField('Connect to GitHub')
+# class GitHubForm(FlaskForm):
+#   github_btn = SubmitField('Connect to GitHub')
 
 
 class LoginForm(FlaskForm):

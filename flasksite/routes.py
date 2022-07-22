@@ -1,6 +1,6 @@
-from flask import render_template, url_for, flash, redirect, request, session
+from flask import render_template, url_for, flash, redirect, request, session, g
 # from flask_bcrypt import Bcrypt
-from flasksite.forms import RegistrationForm, LoginForm, SearchForm, PostForm, GitHubForm
+from flasksite.forms import RegistrationForm, LoginForm, SearchForm, PostForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.model import User,MyChart,circleChart
@@ -9,6 +9,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from urllib.parse import urlparse, urljoin
 from leetcode import get_submissions_difficulty,get_submissions_date,get_submissions,get_submissions_level
 from sqlalchemy import or_
+from flasksite.githubAPI import github_tags
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -54,18 +55,18 @@ def search():
 
     return render_template("search.html", form=form, searched=search_query, users=user_obj)
 
-@app.route('/github-button', methods=['GET', 'POST'])
-def github_connect():
-    github_form = GitHubForm()
-    register_form = RegistrationForm()
-    return render_template("register.html", github_form=github_form, register_form=register_form)
+# @app.route('/github-button', methods=['GET', 'POST'])
+# def github_connect():
+#     # github_form = GitHubForm()
+#     register_form = RegistrationForm()
+#     return render_template("register.html", register_form=register_form)
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
   if current_user.is_authenticated:
     return redirect(url_for('home'))
 
-  github_form = GitHubForm()
+#   github_form = GitHubForm()
   reg_form = RegistrationForm()
   if reg_form.validate_on_submit():
     user = User(username=reg_form.username.data, email=reg_form.email.data, school=reg_form.school.data, grad_year=reg_form.grad_year.data,password_hash=hash_pass(reg_form.password.data))
@@ -73,12 +74,14 @@ def register():
     db.session.commit()
     login_user(user)
     flash(f'Account created for {reg_form.username.data}!', 'success')
-    return redirect(url_for('home'))
-  return render_template('register.html', title='Register', register_form=reg_form, github_form=github_form)
+    return redirect(url_for('github_login'))
+  return render_template('register.html', title='Register', register_form=reg_form)
+
 
 @app.route('/github-login', methods=['GET', 'POST'])
 def github_login():
     return github.authorize(redirect_uri="https://hammernepal-celticsurvive-5000.codio.io/login/github/authorized")
+
 
 @app.route('/login/github/authorized')
 @github.authorized_handler
@@ -96,10 +99,34 @@ def authorized(oauth_token):
         # db.session.add(user)
 
     user.github_access_token = oauth_token
-    print(user)
+  
     # login_user(user)
+    g.user = user
+    github_user = github.get('/user')
+    user_dict = github_tags(github_user, oauth_token)
+    session['github_user_info'] = user_dict
+    # print(f"github_user(): {github_user}")
+    # user.github_id = github_user['id']
+    # user.github_login = github_user['login']
+
+
+    session['user_id'] = user.id
     db.session.commit()
     return redirect(next_url)
+
+@app.before_request
+def before_request():
+    g.user = None
+    if 'user_id' in session:
+        g.user = User.query.get(session['user_id'])
+
+@github.access_token_getter
+def token_getter():
+    user = g.user
+    if user is not None:
+        return user.github_access_token
+ 
+
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -139,7 +166,8 @@ def logout():
 @app.route("/profile")
 @login_required
 def profile():
-  profile_pic = url_for('static', filename=f"img/{current_user.profile_pic}")
+
+  profile_pic = url_for('static', filename=f"img/{current_user.profile_pic}") # change to github pic
   chart = MyChart()
   try:
     submissions = get_submissions_date(current_user.username)
@@ -165,7 +193,9 @@ def profile():
     
     return render_template("profile.html", subtitle="Profile", chartJSON = NewChart,profile_pic=profile_pic,\
       display_graph= display_graph,submissions = get_submissions(current_user.username),\
-        circleChartJSON=cChart, solved = sub["solved"])
+        circleChartJSON=cChart, solved = sub["solved"], github_data = session['github_user_info'])
+  
+
   
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
