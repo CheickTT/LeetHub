@@ -87,7 +87,7 @@ class circleChart(BaseChart):
 
         class submission: 
             data = [7]
-            backgroundColor = ["green","orange","red","blue","brown","cyan"]
+            backgroundColor = ["green","orange","red","blue","brown","cyan","yellow","indigo","purple","pink","violet"]
             
     class options: 
 
