@@ -16,8 +16,8 @@ from flasksite.githubAPI import github_tags
 @app.route("/")
 @app.route("/home", methods = ["GET", "POST"])
 def home():
-  profiles = User.query.order_by(User.id.desc())
-  posts = Post.query.all()
+
+  posts = Post.query.order_by(Post.id.desc())
   print(posts)
 
   return render_template('home.html', subtitle="Posts", posts = posts)
