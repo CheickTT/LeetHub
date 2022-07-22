@@ -69,7 +69,7 @@ def register():
 
 @app.route('/github-login', methods=['GET', 'POST'])
 def github_login():
-    return github.authorize(redirect_uri="https://pricecanada-mineralactive-5000.codio.io/login/github/authorized")
+    return github.authorize(redirect_uri="https://leethub.herokuapp.com/login/github/authorized")
 
 
 @app.route('/login/github/authorized')
