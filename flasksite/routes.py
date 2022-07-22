@@ -76,11 +76,11 @@ def register():
     return redirect(url_for('home'))
   return render_template('register.html', title='Register', register_form=reg_form, github_form=github_form)
 
-@app.route('/github-login')
+@app.route('/github-login', methods=['GET', 'POST'])
 def github_login():
-    return github.authorize()
+    return github.authorize(redirect_uri="https://hammernepal-celticsurvive-5000.codio.io/login/github/authorized")
 
-@app.route('/github-callback')
+@app.route('/login/github/authorized')
 @github.authorized_handler
 def authorized(oauth_token):
     print("Running authorized()...")
