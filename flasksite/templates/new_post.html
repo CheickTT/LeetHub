@@ -3,7 +3,7 @@
     <!-- <p class="account-heading">{{ subtitle }}</p> -->
     <div class="content-section">
         <h2>Create New Post</h2>
-        <form method="POST" action="{{ url_for('home') }}">
+        <form method="POST" action="{{ url_for('new_post') }}">
             {{ post_form.hidden_tag() }}
             <fieldset class="form-group">
                 <div class="form-group">

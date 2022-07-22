@@ -183,6 +183,7 @@ def profile():
     for date,val in submissions.items():
       labels.append(date)
       values.append(val)
+
     chart.labels.group = labels
     chart.data.submission.data = values
     NewChart = chart.get()
@@ -191,7 +192,7 @@ def profile():
     chart.data.submission.data = [sub['Easy'],sub['Medium'],sub['Hard']]
     cChart = chart.get()
     
-    return render_template("profile.html", subtitle="Profile", chartJSON = NewChart,profile_pic=profile_pic,\
+    return render_template("profile.html", subtitle="My Profile", chartJSON = NewChart,profile_pic=profile_pic,\
       display_graph= display_graph,submissions = get_submissions(current_user.username),\
         circleChartJSON=cChart, solved = sub["solved"], github_data = session['github_user_info'])
   
