@@ -16,7 +16,7 @@ class User(db.Model, UserMixin):
   school = db.Column(db.String(120), nullable=False)  
   grad_year = db.Column(db.String(4), nullable=False)
   password_hash = db.Column(db.String(60), nullable=False)
-  github_access_token = db.Column(db.String(120), nullable=False, default='testtoken')
+  github_access_token = db.Column(db.String(255), nullable=False, default='testtoken')
 
 
   def __repr__(self):
