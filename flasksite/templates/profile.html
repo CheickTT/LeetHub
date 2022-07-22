@@ -83,6 +83,14 @@
                         </tr>
                     {% endfor %}
                 </table>
+                    <h4>Languages by Repositories Graph</h4>
+                    <canvas id = "lChart" ></canvas>
+                        <script>
+                            var data = {{ lchartJSON | safe }}
+                            var ctx = document.getElementById("lChart").getContext('2d');
+                            var lChart = new Chart(ctx, data);
+                        </script>
+
 
             </div>
         </div>

@@ -12,8 +12,8 @@ def create_app(test_config=None):
         SQLALCHEMY_TRACK_MODIFICATIONS = False,
         SECRET_KEY = '063b5d59f24fbf66d126cfb5e661902f',
         SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db',
-        GITHUB_CLIENT_ID = '152a4b10d7c7ff66cd4f',
-        GITHUB_CLIENT_SECRET = 'c94378d94df661dcf6065c3c19736d6b25d81c0b'
+        GITHUB_CLIENT_ID = 'ab4ba779cdca8f176427',
+        GITHUB_CLIENT_SECRET = 'ba6477b7e725379cb403c1f6f41d1cc12a94982d'
     )
 
     return app

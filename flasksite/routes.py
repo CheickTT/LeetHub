@@ -4,6 +4,7 @@ from flasksite.forms import RegistrationForm, LoginForm, SearchForm,PostForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.model import User,MyChart,circleChart, Post
+from pychartjs import Options
 from flasksite import app, bcrypt, db, proxied, github
 from flask_login import login_user, logout_user, current_user, login_required
 from urllib.parse import urlparse, urljoin
@@ -68,7 +69,7 @@ def register():
 
 @app.route('/github-login', methods=['GET', 'POST'])
 def github_login():
-    return github.authorize(redirect_uri="https://hammernepal-celticsurvive-5000.codio.io/login/github/authorized")
+    return github.authorize(redirect_uri="https://pricecanada-mineralactive-5000.codio.io/login/github/authorized")
 
 
 @app.route('/login/github/authorized')
@@ -192,9 +193,28 @@ def profile():
     chart.data.submission.data = [sub['Easy'],sub['Medium'],sub['Hard']]
     cChart = chart.get()
     
+    chart = circleChart()
+    repos = session['github_user_info']['repositories']
+    labels = []
+    values = []
+    for repo in repos:
+      language = repo['languages']
+      for lang in language:
+        if lang not in labels:
+          labels.append(lang)
+          values.append(1)
+        else:
+          values[labels.index(lang)] += 1
+
+    chart.labels.group = labels
+    chart.data.submission.data = values
+    chart.options.title = Options.Title("Languages")
+    lChart = chart.get()
+    
     return render_template("profile.html", subtitle="My Profile", chartJSON = NewChart,profile_pic=profile_pic,\
       display_graph= display_graph,submissions = get_submissions(current_user.username),\
-        circleChartJSON=cChart, solved = sub["solved"], github_data = session['github_user_info'])
+        circleChartJSON=cChart, solved = sub["solved"], github_data = session['github_user_info'],\
+        lchartJSON = lChart)
   
 
   
