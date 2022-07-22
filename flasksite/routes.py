@@ -3,9 +3,9 @@ from flask import render_template, url_for, flash, redirect, request, session, g
 from flasksite.forms import RegistrationForm, LoginForm, SearchForm,PostForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
-from flasksite.model import User,MyChart,circleChart, Post
 from flasksite import app, bcrypt, db, proxied, github
 from flask_login import login_user, logout_user, current_user, login_required
+from flasksite.model import User,MyChart,circleChart,Post
 from urllib.parse import urlparse, urljoin
 from leetcode import get_submissions_difficulty,get_submissions_date,get_submissions,get_submissions_level
 from sqlalchemy import or_
