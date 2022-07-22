@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy,sqlalchemy
-from flasksite import app, db, login_manager
+from flasksite import app, db, login_manager, postdb
 from flask_login import UserMixin
 from pychartjs import BaseChart, ChartType, Color, Options
 
@@ -21,6 +21,16 @@ class User(db.Model, UserMixin):
 
   def __repr__(self):
     return f"User('{self.username}', '{self.email}', '{self.profile_pic}', '{self.school}', '{self.grad_year}', '{self.password_hash}')"
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), nullable=False)
+    profile_pic = db.Column(db.String(20), nullable=False, default='default.png')
+    title = db.Column(db.String(20), nullable=False)
+    description = db.Column(db.String(20), nullable=False)
+
+    def __str__(self):
+      return f"Post('{self.username}', '{self.title}', '{self.profile_pic}','{self.description}')"
 
 
 class MyChart(BaseChart):

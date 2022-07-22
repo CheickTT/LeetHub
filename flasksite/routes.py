@@ -1,9 +1,9 @@
 from flask import render_template, url_for, flash, redirect, request
 # from flask_bcrypt import Bcrypt
-from flasksite.forms import RegistrationForm, LoginForm, SearchForm, PostForm
+from flasksite.forms import RegistrationForm, LoginForm, SearchForm,PostForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
-from flasksite.model import User,MyChart,circleChart
+from flasksite.model import User,MyChart,circleChart, Post
 from flasksite import app, bcrypt, db, proxied, github
 from flask_login import login_user, logout_user, current_user, login_required
 from urllib.parse import urlparse, urljoin
@@ -11,26 +11,14 @@ from leetcode import get_submissions_difficulty,get_submissions_date,get_submiss
 from sqlalchemy import or_
 
 
-@app.route("/", methods=["GET", "POST"])
-@app.route("/home", methods=["GET", "POST"])
+@app.route("/")
+@app.route("/home", methods = ["GET", "POST"])
 def home():
   profiles = User.query.order_by(User.id.desc())
-  return render_template('profiles.html', subtitle="Profiles", users=profiles)
+  posts = Post.query.all()
+  print(posts)
 
-
-@app.route("/post/new", methods=["GET", "POST"])
-@login_required
-def new_post():
-    form = PostForm()
-    if form.validate_on_submit():
-        print("Successful post")
-        flash('Your post has been created!', 'success')
-        return redirect(url_for("home"))
-    else:
-        # form.
-        print(f"is submitted: {form.is_submitted()}")
-        print("Unsuccessful post")
-    return render_template("new_post.html", post_form=form)
+  return render_template('home.html', subtitle="Posts", posts = posts)
 
 
 @app.context_processor
@@ -65,35 +53,11 @@ def register():
     user = User(username=reg_form.username.data, email=reg_form.email.data, school=reg_form.school.data, grad_year=reg_form.grad_year.data,password_hash=hash_pass(reg_form.password.data))
     db.session.add(user)
     db.session.commit()
-
+    login_user(user)
     flash(f'Account created for {reg_form.username.data}!', 'success')
-    return redirect(url_for('github_login'))
+    return github.authorize()
   return render_template('register.html', title='Register', login_form=login_form, register_form=reg_form)
 
-@app.route('/github-login')
-def github_login():
-    return github.authorize()
-
-@app.route('/github-callback')
-@github.authorized_handler
-def authorized(oauth_token):
-    print("Running authorized()...")
-    print(f'Token: {oauth_token}')
-    next_url = request.args.get('next') or url_for('home')
-    if oauth_token is None:
-        flash("Authorization failed.")
-        return redirect(next_url)
-
-    user = User.query.filter_by(github_access_token=oauth_token).first()
-    if user is None:
-        user = User.query.order_by(User.id.desc()).first() # since user is created in register(), just retrieve latest entry 
-        # db.session.add(user)
-
-    user.github_access_token = oauth_token
-    print(user)
-    login_user(user)
-    db.session.commit()
-    return redirect(next_url)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -129,37 +93,45 @@ def logout():
   logout_user()
   return redirect(url_for('home'))
 
+@app.route("/new_post", methods=['GET', 'POST'])
+def new_post():
+  form = PostForm()
+  print(current_user.username)
+  print(Post.query.all())
+  if form.validate_on_submit():
+    post = Post(username=current_user.username, profile_pic = current_user.profile_pic,title= form.title.data,description= form.content.data)
+    print(post)
+    db.session.add(post)
+    db.session.commit()
+    return redirect(url_for('home'))
+  return render_template('new_post.html', post_form = form)
 
 @app.route("/profile")
 @login_required
 def profile():
   profile_pic = url_for('static', filename=f"img/{current_user.profile_pic}")
   chart = MyChart()
-  try:
-    submissions = get_submissions_date(current_user.username)
-  except:
-    return render_template("profile.html", subtitle="Profile") 
-  else: 
-    if(len(submissions) < 3):
-      display_graph = False
-    else:
-      display_graph = True
-    labels = []
-    values = []
-    for date,val in submissions.items():
-      labels.append(date)
-      values.append(val)
-    chart.labels.group = labels
-    chart.data.submission.data = values
-    NewChart = chart.get()
-    sub = get_submissions_level(current_user.username)
-    chart = circleChart()
-    chart.data.submission.data = [sub['Easy'],sub['Medium'],sub['Hard']]
-    cChart = chart.get()
-    
-    return render_template("profile.html", subtitle="Profile", chartJSON = NewChart,profile_pic=profile_pic,\
-      display_graph= display_graph,submissions = get_submissions(current_user.username),\
-        circleChartJSON=cChart, solved = sub["solved"])
+  submissions = get_submissions_date(current_user.username)
+  if(len(submissions) < 3):
+    display_graph = False
+  else:
+    display_graph = True
+  labels = []
+  values = []
+  for date,val in submissions.items():
+    labels.append(date)
+    values.append(val)
+  chart.labels.group = labels
+  chart.data.submission.data = values
+  NewChart = chart.get()
+  sub = get_submissions_level(current_user.username)
+  chart = circleChart()
+  chart.data.submission.data = [sub['Easy'],sub['Medium'],sub['Hard']]
+  cChart = chart.get()
+  
+  return render_template("profile.html", subtitle="Profile", chartJSON = NewChart,profile_pic=profile_pic,\
+    display_graph= display_graph,submissions = get_submissions(current_user.username),\
+      circleChartJSON=cChart, solved = sub["solved"])
   
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
@@ -171,5 +143,3 @@ def is_safe_url(target):
 def hash_pass(password):
   pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
   return pw_hash
-
-  
