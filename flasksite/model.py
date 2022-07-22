@@ -92,3 +92,23 @@ class circleChart(BaseChart):
     class options: 
 
         title = Options.Title("Number of Submissions")
+
+
+class GithubChart(BaseChart):
+
+    type = ChartType.Doughnut
+
+    class labels:
+        group = ['Easy', 'Medium', 'Hard']
+
+
+    
+    class data:
+
+        class submission: 
+            data = [7]
+            backgroundColor = ["green","orange","red","blue","brown","cyan","yellow","indigo","purple","pink","violet"]
+            
+    class options: 
+
+        title = Options.Title("Languages")

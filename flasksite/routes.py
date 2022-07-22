@@ -3,7 +3,7 @@ from flask import render_template, url_for, flash, redirect, request, session, g
 from flasksite.forms import RegistrationForm, LoginForm, SearchForm,PostForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
-from flasksite.model import User,MyChart,circleChart, Post
+from flasksite.model import User,MyChart,circleChart, GithubChart, Post
 from pychartjs import Options
 from flasksite import app, bcrypt, db, proxied, github
 from flask_login import login_user, logout_user, current_user, login_required
@@ -193,7 +193,7 @@ def profile():
     chart.data.submission.data = [sub['Easy'],sub['Medium'],sub['Hard']]
     cChart = chart.get()
     
-    chart = circleChart()
+    github_chart = GithubChart()
     repos = session['github_user_info']['repositories']
     labels = []
     values = []
@@ -206,10 +206,10 @@ def profile():
         else:
           values[labels.index(lang)] += 1
 
-    chart.labels.group = labels
-    chart.data.submission.data = values
+    github_chart.labels.group = labels
+    github_chart.data.submission.data = values
     # chart.options.title = Options.Title("Languages")
-    lChart = chart.get()
+    lChart = github_chart.get()
     
     return render_template("profile.html", subtitle="My Profile", chartJSON = NewChart,profile_pic=profile_pic,\
       display_graph= display_graph,submissions = get_submissions(current_user.username),\
