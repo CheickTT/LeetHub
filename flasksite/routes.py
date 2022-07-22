@@ -208,7 +208,7 @@ def profile():
 
     chart.labels.group = labels
     chart.data.submission.data = values
-    chart.options.title = Options.Title("Languages")
+    # chart.options.title = Options.Title("Languages")
     lChart = chart.get()
     
     return render_template("profile.html", subtitle="My Profile", chartJSON = NewChart,profile_pic=profile_pic,\
