@@ -1,13 +1,13 @@
-import requests
-from datetime import datetime
-from pprint import pprint
 import ast
+from datetime import datetime
+
+import requests
 
 
 def get_all_submissions(username):
     """Get all recent submited problems on github"""
 
-    query="""query getRecentSubmissionList($username: String!) {
+    query = """query getRecentSubmissionList($username: String!) {
             recentSubmissionList(username: $username) {
                 title
                 titleSlug
@@ -19,15 +19,15 @@ def get_all_submissions(username):
 
         }"""
 
-
-    variables = {'username':username}
-    request = requests.post(" https://leetcode.com/graphql", json={'query': query,'variables':variables})
+    variables = {'username': username}
+    request = requests.post(" https://leetcode.com/graphql", json={'query': query, 'variables': variables})
     return request.json()
+
 
 def user_stats_api(username):
     """Get user's submission statistics"""
 
-    query="""query getUserProfile($username: String!) {
+    query = """query getUserProfile($username: String!) {
         allQuestionsCount {
             difficulty
             count
@@ -53,14 +53,15 @@ def user_stats_api(username):
         }
     }"""
 
-    variables = {'username':username}
-    request = requests.post(" https://leetcode.com/graphql", json={'query': query,'variables':variables})
+    variables = {'username': username}
+    request = requests.post(" https://leetcode.com/graphql", json={'query': query, 'variables': variables})
     return request.json()
+
 
 def get_user_stats(data):
     stats = data['data']['matchedUser']['profile']
 
-    return {'ranking': stats['ranking'],'stars':stats['starRating']}
+    return {'ranking': stats['ranking'], 'stars': stats['starRating']}
 
 
 def get_submissions_difficulty(username):
@@ -68,13 +69,14 @@ def get_submissions_difficulty(username):
     difficulties = data['data']['allQuestionsCount']
     submissions = data['data']['matchedUser']['submitStats']['acSubmissionNum']
     results = {}
-    for submission, difficulty in zip(submissions,difficulties):
+    for submission, difficulty in zip(submissions, difficulties):
         if submission['difficulty'] == 'All':
             results['solved'] = submission['count']
         else:
-            results[submission['difficulty']] = str(submission['count']) +"/"+ str(difficulty['count'])
+            results[submission['difficulty']] = str(submission['count']) + "/" + str(difficulty['count'])
 
     return results
+
 
 def get_submissions_level(username):
     data = user_stats_api(username)
@@ -88,8 +90,9 @@ def get_submissions_level(username):
 
     return results
 
-def get_submissions_date(username):   
-    query ="""query getRecentSubmissionList($username: String!) {
+
+def get_submissions_date(username):
+    query = """query getRecentSubmissionList($username: String!) {
             matchedUser(username: $username){
 
                 submissionCalendar
@@ -98,12 +101,12 @@ def get_submissions_date(username):
 
         }"""
 
-    variables = {'username':username}
-    request = requests.post(" https://leetcode.com/graphql", json={'query': query,'variables':variables})
+    variables = {'username': username}
+    request = requests.post(" https://leetcode.com/graphql", json={'query': query, 'variables': variables})
     data = request.json()
     submissions = ast.literal_eval(data['data']['matchedUser']['submissionCalendar'])
     results = {}
-    for date,count in submissions.items():
+    for date, count in submissions.items():
         time = datetime.fromtimestamp(int(date)).strftime("%m-%d-%Y")
         results[time] = count
 
@@ -116,7 +119,7 @@ def get_submissions(username):
     submissions = all_submissions['data']['recentSubmissionList']
     ac_submissions = []
     for submission in submissions:
-        ac_submissions.append({"title" : submission['title'],"lang" : submission['lang'],\
-         "status" : submission['statusDisplay']})
+        ac_submissions.append({"title": submission['title'], "lang": submission['lang'], \
+                               "status": submission['statusDisplay']})
 
     return ac_submissions

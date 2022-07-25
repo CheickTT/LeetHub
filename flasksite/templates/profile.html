@@ -2,8 +2,8 @@
 {% block content %}
 
     <head>
-        <script type="text/javascript" 
-        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js">
+        <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js">
         </script>
     </head>
     <body>
@@ -15,8 +15,9 @@
             </div>
             <div class="flex-grow-1 ms-3">
                 <h2>{{ subtitle }}</h2>
-                <h3 class="account-heading">{{ current_user.username }}</h3>
-                <p class="text-secondary">{{ current_user.email }} - {{ current_user.school }}, Class of {{ current_user.grad_year[:4] }} </p>
+                <h3 class="account-heading">{{ user.username }}</h3>
+                <p class="text-secondary">{{ user.email }} - {{ user.school }}, Class
+                    of {{ user.grad_year[:4] }} </p>
 
             </div>
         </div>
@@ -31,26 +32,28 @@
                             <th>Submissions</th>
                             <th>Status</th>
                         </tr>
-                        {% for submission in submissions%}
+                        {% for submission in submissions %}
                             <tr>
-                                <td>{{submission["title"]}} ({{submission["lang"]}})</td>
-                                <td>{{submission["status"]}}</td>
+                                <td>{{ submission["title"] }} ({{ submission["lang"] }})</td>
+                                <td>{{ submission["status"] }}</td>
                             </tr>
                         {% endfor %}
                     </table>
                     <h4>Problem Solved</h4>
                     <p class="total-solved">Total Problem Solved: {{ solved }}</p>
-                    <canvas id = "cChart" ></canvas>
+                    <canvas id="cChart"></canvas>
                     <script>
-                        var data = {{ circleChartJSON | safe }}
+                        var data =
+                        {{ circleChartJSON | safe }}
                         var ctx = document.getElementById("cChart").getContext('2d');
                         var cChart = new Chart(ctx, data);
                     </script>
                     <h4>Submission Graph</h4>
                     {% if display_graph %}
-                        <canvas id = "myChart" ></canvas>
+                        <canvas id="myChart"></canvas>
                         <script>
-                            var data = {{ chartJSON | safe }}
+                            var data =
+                            {{ chartJSON | safe }}
                             var ctx = document.getElementById("myChart").getContext('2d');
                             var myChart = new Chart(ctx, data);
                         </script>
@@ -58,40 +61,44 @@
                         <p> Not enough data to display the graph </p>
                     {% endif %}
                 {% else %}
-                    <p>No LeetCode account submissions found for {{ current_user.username }}</p>
+                    <p>No LeetCode account submissions found for {{ user.username }}</p>
                 {% endif %}
 
             </div>
             <div class="row my-3">
                 <h3>GitHub Repos</h3>
-                <table class="table table-sm">
-                    <tr>
-                        <th>Repo Name</th>
-                        <th>Description</th>
-                        <th>Languages</th>
-                    </tr>
-                    {% for repo in github_data['repositories'] %}
+                {% if github_data %}
+                    <table class="table table-sm">
                         <tr>
-                            <td>{{repo['name']}}</td>
-                            {% if repo['description'] %}
-                                <td>{{ repo['description'] }}</td>
-                            {% else %}
-                                <td class="fst-italic fw-light">No description provided.</td>
-                            {% endif %}
-
-                            <td>{{ ', '.join(repo['languages']) }}</td>
+                            <th>Repo Name</th>
+                            <th>Description</th>
+                            <th>Languages</th>
                         </tr>
-                    {% endfor %}
-                </table>
+                        {% for repo in github_data['repositories'] %}
+                            <tr>
+                                <td>{{ repo['name'] }}</td>
+                                {% if repo['description'] %}
+                                    <td>{{ repo['description'] }}</td>
+                                {% else %}
+                                    <td class="fst-italic fw-light">No description provided.</td>
+                                {% endif %}
+
+                                <td>{{ ', '.join(repo['languages']) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
                     <h4>Languages by Repositories Graph</h4>
-                    <canvas id = "lChart" ></canvas>
-                        <script>
-                            var data = {{ lchartJSON | safe }}
-                            var ctx = document.getElementById("lChart").getContext('2d');
-                            var lChart = new Chart(ctx, data);
-                        </script>
+                    <canvas id="lChart"></canvas>
+                    <script>
+                        var data =
+                        {{ lchartJSON | safe }}
+                        var ctx = document.getElementById("lChart").getContext('2d');
+                        var lChart = new Chart(ctx, data);
+                    </script>
 
-
+                {% else %}
+                    <p>No GitHub account info found for {{ user.username }}</p>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -12,9 +12,9 @@
                         <img class="rounded-circle account-img" src="static/img/{{ user.profile_pic }}">
                     </div>
                     <div class="flex-grow-1 ms-3">
+                        <a class="btn-link" href="{{ url_for('profile') }}/{{ user.username }}" style="text-decoration: none;">{{ user.username }}</a>
                         <h3 class="account-heading">{{ user.username }}</h3>
                         <p class="text-secondary">{{ user.email }} - {{ user.school }}, Class of {{ user.grad_year[:4] }} </p>
-
                     </div>
                 </div>
 

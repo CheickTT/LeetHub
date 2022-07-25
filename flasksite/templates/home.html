@@ -8,7 +8,7 @@
                     <img class="rounded-circle account-img" src="static/img/{{ post.profile_pic }}">
                 </div>
                 <div class="flex-grow-1 ms-3">
-                    <a class="btn-link" href="#" style="text-decoration: none;">{{ post.username }}</a>
+                    <a class="btn-link" href="{{ url_for('profile') }}/{{ post.username }}" style="text-decoration: none;">{{ post.username }}</a>
                     <h3>{{ post.title }}</h3>
                     <p>{{ post.description}}</p>
                 </div>
