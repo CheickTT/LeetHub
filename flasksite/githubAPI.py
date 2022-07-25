@@ -1,18 +1,12 @@
 from github import Github as gH
 import requests
-import json
-import pprint
-from flask import render_template, url_for, flash, redirect, request, session
+
+
 # from flask_bcrypt import Bcrypt
 # from forms import RegistrationForm, LoginForm, SearchForm, PostForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 # from model import User,MyChart,circleChart
-from flasksite import app, bcrypt, db, proxied, github
-from flask_login import login_user, logout_user, current_user, login_required
-from urllib.parse import urlparse, urljoin
-from leetcode import get_submissions_difficulty,get_submissions_date,get_submissions,get_submissions_level
-from sqlalchemy import or_
 
 def github_oath():
 

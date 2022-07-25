@@ -12,8 +12,8 @@ from flasksite.githubAPI import github_tags
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.model import User, DateChart, LevelChart, GithubChart, Post
-from leetcode import get_submissions_date, get_submissions, get_submissions_level
-from pychartjs import BaseChart, ChartType, Color, Options
+from flasksite.leetcode import get_submissions_date, get_submissions, get_submissions_level
+from pychartjs import Color
 
 
 @app.route("/")
