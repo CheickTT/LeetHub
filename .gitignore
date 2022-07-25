@@ -1,3 +1,7 @@
 /flasksite/__pycache__
+__pycache__
+.idea
+flasksite.egg-info
+venv
 config.py
 .codio
