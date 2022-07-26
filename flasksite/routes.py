@@ -98,6 +98,7 @@ def authorized(oauth_token):
     # login_user(user)
     g.user = user
     github_user = github.get('/user')
+    user.github_username = github_user['login']
     user_dict = github_tags(github_user, oauth_token)
     session['github_user_info'] = user_dict
     # print(f"github_user(): {github_user}")
@@ -195,8 +196,10 @@ def profile(username):
     else:
         date_chart_json, difficulty_chart_json, display_graph, sub = make_leetcode_charts(user, submissions)
 
+    github_user = github.get(f'/users/{user.github_username}')
+    github_user_dict = github_tags(github_user, user.github_access_token)
     try:
-        repos = session['github_user_info']['repositories']
+        repos = github_user_dict['repositories']
     except KeyError:
         pass
     else:
@@ -206,7 +209,7 @@ def profile(username):
                            profile_pic=profile_pic,
                            display_graph=display_graph, submissions=get_submissions(user.username),
                            circleChartJSON=difficulty_chart_json, solved=sub["solved"],
-                           lchartJSON=github_chart_json, github_data=session['github_user_info'])
+                           lchartJSON=github_chart_json, github_data=github_user_dict)
 
 
 def make_github_charts(repos):
